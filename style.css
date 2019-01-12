@@ -1,0 +1,80 @@
+body {
+    background-color: #ff6262;
+}
+
+.controller {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fde3a7;
+    text-align: center;
+    padding: 10px;
+}
+
+.btn-start {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.board {
+    margin: 0 auto;
+    margin-top: 90px;
+    width: 80%;
+    max-width: 600px;    
+}
+
+.board {
+    position: relative;
+    background-color: #fde3a7;
+}
+
+@media (max-width: 600px) {
+    .board {
+        width: 90%;
+    }
+}
+
+.card {
+    float: left;
+    width: 21%;
+    margin: 2%;
+    background-image: url('images/pic_c.png');
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+}
+
+.card > .card-img {
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+
+.card > .card-num {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    pointer-events: none;
+}
+
+.card:hover {
+    box-shadow: 5px 5px 0 #ff6262;
+}
