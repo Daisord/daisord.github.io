@@ -1,3 +1,9 @@
+// 搜尋音樂
+$(() => {
+    
+})
+
+// 建立遊戲
 $(() => {
     let musicList = [
         ['Pa0NfMzqWKr80xUY_N', 0], ['5-DvgYA-i4L5qMK_rn', 0], ['4r3Bvo-gSSJLo_1gTa', 0],
@@ -47,6 +53,8 @@ $(() => {
             if (x.data('state') !== 1) {
                 x.removeClass('btn-primary');
                 x.addClass('btn-dark');
+            } else {
+                x.html('完成');
             }
         });
     }
@@ -112,7 +120,6 @@ $(() => {
             // 播放的歌曲配對成功
             if (frame.data('src') === lastMusicSrcTemp) {
                 sltMusicTemp.forEach((x) => {
-                    x.html('完成');
                     x.data('state', 1);
                 });
                 console.log('歌曲配對成功');
