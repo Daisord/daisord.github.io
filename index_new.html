@@ -7,18 +7,14 @@
 
     <title>Music Concentration</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
-        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" 
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" 
-        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" 
-        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
     <script src="game-new.js"></script>
 
@@ -39,144 +35,161 @@
 
 <body>
     <div class="container mt-5">
-        <div class="row mb-3">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">0</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="0">播放</button>
+        <!-- 遊戲區塊 -->
+        <div class="game-panel" style="display: none;">
+            <div class="row mb-3">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">0</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="0">播放</button>
+                            </div>
                         </div>
                     </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="0"></iframe>
                 </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="0"></iframe>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">1</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="1">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="1"></iframe>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">2</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="2">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="2"></iframe>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">3</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="3">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="3"></iframe>
+                </div>
             </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">1</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="1">播放</button>
+            <div class="row mb-3">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">4</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="4">播放</button>
+                            </div>
                         </div>
                     </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="4"></iframe>
                 </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="1"></iframe>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">5</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="5">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="5"></iframe>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">6</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="6">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="6"></iframe>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">7</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="7">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="7"></iframe>
+                </div>
             </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">2</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="2">播放</button>
+            <div class="row mb-3">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">8</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="8">播放</button>
+                            </div>
                         </div>
                     </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="8"></iframe>
                 </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="2"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">3</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="3">播放</button>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">9</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="9">播放</button>
+                            </div>
                         </div>
                     </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="9"></iframe>
                 </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="3"></iframe>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">A</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="10">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="10"></iframe>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <h1 class="float-left">B</h1>
+                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
+                                    data-num="11">播放</button>
+                            </div>
+                        </div>
+                    </div>
+                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="11"></iframe>
+                </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">4</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="4">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="4"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">5</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="5">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="5"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">6</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="6">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="6"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">7</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="7">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="7"></iframe>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">8</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="8">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="8"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">9</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="9">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="9"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">A</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="10">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="10"></iframe>
-            </div>
-            <div class="col-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="clearfix">
-                            <h1 class="float-left">B</h1>
-                            <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0" data-num="11">播放</button>
-                        </div>
-                    </div>
-                </div>
-                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="11"></iframe>
-            </div>
-        </div>
+
+        <!-- 歌曲搜尋與加入功能區塊 -->
         <div class="row mb-3">
             <div class="col text-left">
                 <div class="form-group">
@@ -192,10 +205,12 @@
                 </div>
             </div>
             <div class="col text-right">
-                <button type="button" class="btn btn-block btn-light" disabled>加入六首歌曲後即可開始</button>
+                <button id="btn-start" type="button" class="btn btn-block btn-light" disabled>加入六首歌曲後即可開始</button>
             </div>
         </div>
-        <div class="row mb-3">
+
+        <!-- 列表區塊 -->
+        <div class="row mb-3 table-panel">
             <div class="col">
                 <table id="table-search" class="table">
                     <thead>
@@ -217,6 +232,30 @@
                     <tbody>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- 遊戲結束提示 -->
+        <button id="btn-end" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalGameOver"
+            style="display: none;">Hidden Ones</button>
+        <div class="modal fade" id="modalGameOver" tabindex="-1" role="dialog" aria-labelledby="modalGameOverLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalGameOverLabel">遊戲結束</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h1>恭喜！全部配對完成！</h1>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">關閉提示</button>
+                        <button type="button" class="btn btn-primary" onclick="location.replace(location);">再玩一次</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

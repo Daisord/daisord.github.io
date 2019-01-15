@@ -1,11 +1,7 @@
-// let musicList = [
-//     ['Pa0NfMzqWKr80xUY_N', 0], ['5-DvgYA-i4L5qMK_rn', 0], ['4r3Bvo-gSSJLo_1gTa', 0],
-//     ['KlRl51CoBZNAA1LNDi', 0], ['8p2Kxkf72c2elKV27S', 0], ['OqUuRN7fMMmVdincde', 0]
-// ];
-
 $(() => {
     let musicList = [];
     let sltCounter = 0; // 點擊次數計數器
+    let remainderCounter = 6; // 尚未完成的配對計數器
     let sltMusicTemp = []; // 播放音樂的 btn 暫存
     let lastNumTemp; // 前次點擊播放的號碼暫存
     let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;
@@ -27,18 +23,10 @@ $(() => {
                 Authorization: 'Bearer duA3r9l4jEhPP8QSxfeaSA=='
             },
             success: (data, textStatus, jqXHR ) => {
-                if (musicList.length >= 6) {
-                    return;
-                }
-
                 if (data.tracks) {
                     if (data.tracks.data.length > 0) {
                         // 先清空搜尋列表
-                        $('table tbody tr').remove();
-
-                        // musicList.push([
-                        //     String(data.tracks.data[0].id), 0
-                        // ]);
+                        $('#table-search tbody tr').remove();
 
                         let mData = data.tracks.data;
                         
@@ -53,9 +41,20 @@ $(() => {
 
                         // 加入音樂到配對列表
                         $('#table-search tbody tr').on('click', function() {
-                            let tr = $(this);
+                            if (musicList.length < 6) {
+                                let tr = $(this);
 
-                            $('#table-music tbody').append('<tr>' + tr.html() + '</tr>');
+                                musicList.push([String(tr.data('mid')), 0]);
+                                console.dir(musicList);
+    
+                                $('#table-music tbody').append('<tr>' + tr.html() + '</tr>');
+                            }
+
+                            // 選取六首後停止增加歌曲
+                            if (musicList.length >= 6) {
+                                $('#btn-start').prop('disabled', false);
+                                $('#btn-search').prop('disabled', true);
+                            }                            
                         });                        
                     } else {
                         alert('搜尋沒有結果');
@@ -65,11 +64,16 @@ $(() => {
             error: (jqXHR, textStatus, errorThrown) => {
                 alert('發生錯誤');
             }
-        });
+        });    
+    });
 
-        if (musicList.length >= 6) {
-            setFrameSrc();
-        }        
+    // 開始遊戲
+    $('#btn-start').on('click', function() {
+        setFrameSrc();
+        $(this).html('遊戲已開始！');
+        $(this).prop('disabled', true);
+        $('.table-panel').hide();
+        $('.game-panel').show();
     });
 
     function setFrameSrc() {
@@ -98,11 +102,15 @@ $(() => {
 
     // 清除播放紀錄暫存
     function refreshTemp() {
-        sltCounter = 0;
-        sltMusicTemp = [];
-        lastNumTemp = undefined;
-
-        console.log('刷新暫存');
+        if (remainderCounter > 0) {
+            sltCounter = 0;
+            sltMusicTemp = [];
+            lastNumTemp = undefined;
+    
+            console.log('刷新暫存');
+        } else {
+            $('#btn-end').click();
+        }
     }
 
     async function setBtnRecovery() {
@@ -166,10 +174,10 @@ $(() => {
             btn.removeClass('btn-dark');
             btn.addClass('btn-primary');
 
-            // 播放 10 秒後停止播放
+            // 播放 15 秒後停止播放
             timeout = setTimeout(() => {
                 stop();
-            }, 10000);
+            }, 15000);
         }
 
         // 播放兩首歌曲後
@@ -179,6 +187,8 @@ $(() => {
                 sltMusicTemp.forEach((x) => {
                     x.data('state', 1);
                 });
+                remainderCounter--;
+
                 console.log('歌曲配對成功');
             } else {
                 console.log('歌曲配對失敗');
@@ -204,6 +214,4 @@ $(() => {
             }
         }        
     });
-
-    // setFrameSrc();
 });
