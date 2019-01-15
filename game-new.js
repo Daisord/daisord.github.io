@@ -6,7 +6,8 @@ $(() => {
     let sltCounter = 0; // 點擊次數計數器
     let sltMusicTemp = []; // 播放音樂的 btn 暫存
     let lastNumTemp; // 前次點擊播放的號碼暫存
-    let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;    
+    let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;
+    let timeout;
 
     function setFrameSrc() {
         let player = $('.music-player');
@@ -45,7 +46,7 @@ $(() => {
         await sltMusicTemp.forEach((x) => {
             if (x.data('state') !== 1) {
                 x.removeClass('btn-primary');
-                x.addClass('btn-dark');                     
+                x.addClass('btn-dark');
             }
         });
     }
@@ -62,8 +63,13 @@ $(() => {
 
         console.log('點擊第 ' + num + ' 首音樂');
 
-        // 點了同一首音樂則直接返回，不計數與暫存
+        // 連點了同一首音樂則停止播放，不計數與暫存
         if (num === lastNumTemp) {
+            stop();
+
+            // 取消目前的 teimout
+            clearTimeout(timeout);
+
             console.log('點了同一首音樂');
             console.log('停止播放');
             return;
@@ -85,7 +91,7 @@ $(() => {
 
         // 點擊播放一首音樂
         if (sltCounter < 2) {
-            // 連接播放歌曲的 KKBOX Widget 頁面
+            // 連結到 KKBOX Widget 頁面
             frame.attr('src', frame.data('src'));
 
             lastNumTemp = num;
@@ -93,23 +99,11 @@ $(() => {
 
             btn.html('停止');
             btn.removeClass('btn-dark');
-            btn.addClass('btn-primary');            
+            btn.addClass('btn-primary');
 
-            // 撥放 10 秒後連結到空白頁關閉 KKBOX Widget 頁面
-            setTimeout(() => {
-                frame.attr('src', 'about:blank');
-
-                // 若尚未屬於完成狀態則復原可播放狀態
-                if (btn.data('state') !== 1) {
-                    btn.html('播放');   
-                }  
-
-                // 點擊播放兩首後
-                if (sltCounter >= 2) {
-                    // 於第二首播放結束時自動刷新
-                    setBtnRecovery();
-                    refreshTemp();
-                }              
+            // 播放 10 秒後停止播放
+            timeout = setTimeout(() => {
+                stop();
             }, 10000);
         }
 
@@ -128,6 +122,23 @@ $(() => {
         }
 
         lastMusicSrcTemp = frame.data('src');
+
+        function stop() {
+            // 連結到空白頁關閉 KKBOX Widget 頁面
+            frame.attr('src', 'about:blank');
+
+            // 若尚未屬於完成狀態則復原可播放狀態
+            if (btn.data('state') !== 1) {
+                btn.html('播放');
+            }
+
+            // 點擊播放兩首後
+            if (sltCounter >= 2) {
+                // 於第二首播放結束時自動刷新
+                setBtnRecovery();
+                refreshTemp();
+            }
+        }        
     });
 
     setFrameSrc();
