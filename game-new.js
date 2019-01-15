@@ -1,19 +1,76 @@
-// 搜尋音樂
-$(() => {
-    
-})
+// let musicList = [
+//     ['Pa0NfMzqWKr80xUY_N', 0], ['5-DvgYA-i4L5qMK_rn', 0], ['4r3Bvo-gSSJLo_1gTa', 0],
+//     ['KlRl51CoBZNAA1LNDi', 0], ['8p2Kxkf72c2elKV27S', 0], ['OqUuRN7fMMmVdincde', 0]
+// ];
 
-// 建立遊戲
 $(() => {
-    let musicList = [
-        ['Pa0NfMzqWKr80xUY_N', 0], ['5-DvgYA-i4L5qMK_rn', 0], ['4r3Bvo-gSSJLo_1gTa', 0],
-        ['KlRl51CoBZNAA1LNDi', 0], ['8p2Kxkf72c2elKV27S', 0], ['OqUuRN7fMMmVdincde', 0]
-    ];
+    let musicList = [];
     let sltCounter = 0; // 點擊次數計數器
     let sltMusicTemp = []; // 播放音樂的 btn 暫存
     let lastNumTemp; // 前次點擊播放的號碼暫存
     let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;
     let timeout;
+
+    // 搜尋加入音樂
+    $('#btn-search').on('click', async function () {
+        let mInput = $('#music-input');
+
+        await $.ajax({
+            url: 'https://api.kkbox.com/v1.1/search',
+            method: 'GET',
+            data: {
+                q: mInput.val(),
+                type: 'track',
+                territory: 'TW'
+            },
+            headers: {
+                Authorization: 'Bearer duA3r9l4jEhPP8QSxfeaSA=='
+            },
+            success: (data, textStatus, jqXHR ) => {
+                if (musicList.length >= 6) {
+                    return;
+                }
+
+                if (data.tracks) {
+                    if (data.tracks.data.length > 0) {
+                        // 先清空搜尋列表
+                        $('table tbody tr').remove();
+
+                        // musicList.push([
+                        //     String(data.tracks.data[0].id), 0
+                        // ]);
+
+                        let mData = data.tracks.data;
+                        
+                        mData.forEach((x) => {
+                            $('#table-search tbody').append(
+                                '<tr data-mid="' + x.id + '"><td>' + 
+                                '歌手：' + x.album.artist.name + '<br/>' + 
+                                '專輯：' + x.album.name + '<br/>' + 
+                                '歌名：' + x.name + '</td></tr>'
+                            );
+                        });
+
+                        // 加入音樂到配對列表
+                        $('#table-search tbody tr').on('click', function() {
+                            let tr = $(this);
+
+                            $('#table-music tbody').append('<tr>' + tr.html() + '</tr>');
+                        });                        
+                    } else {
+                        alert('搜尋沒有結果');
+                    }
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert('發生錯誤');
+            }
+        });
+
+        if (musicList.length >= 6) {
+            setFrameSrc();
+        }        
+    });
 
     function setFrameSrc() {
         let player = $('.music-player');
@@ -148,5 +205,5 @@ $(() => {
         }        
     });
 
-    setFrameSrc();
+    // setFrameSrc();
 });

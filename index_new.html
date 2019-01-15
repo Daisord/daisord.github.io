@@ -11,8 +11,8 @@
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" 
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" 
         integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
@@ -29,6 +29,10 @@
 
         .card .btn {
             display: none;
+        }
+
+        #table-search > tbody > tr {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -182,13 +186,37 @@
                         </div>
                         <input id="music-input" class="form-control" type="text">
                         <div class="input-group-append">
-                            <button id="btn-search" type="button" class="btn btn-success">搜尋加入</button>
+                            <button id="btn-search" type="button" class="btn btn-success">搜尋歌曲</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col text-right">
                 <button type="button" class="btn btn-block btn-light" disabled>加入六首歌曲後即可開始</button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <table id="table-search" class="table">
+                    <thead>
+                        <tr>
+                            <th>搜尋結果（點列表加入）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table id="table-music" class="table">
+                    <thead>
+                        <tr>
+                            <th>已加入歌曲列表</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
