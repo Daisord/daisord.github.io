@@ -124,10 +124,6 @@ $(() => {
         });
     }
 
-    function setBtnComplete() {
-
-    }
-
     $('.btn-play').on('click', function () {
         let btn = $(this);
         let num = btn.data('num');
