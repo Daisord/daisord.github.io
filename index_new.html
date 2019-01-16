@@ -23,10 +23,6 @@
             display: none;
         }
 
-        .card .btn {
-            display: none;
-        }
-
         #table-search > tbody > tr {
             cursor: pointer;
         }
@@ -34,11 +30,11 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-3 mb-5">
         <!-- 遊戲區塊 -->
         <div class="game-panel" style="display: none;">
             <div class="row mb-3">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -50,7 +46,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="0"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -62,7 +58,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="1"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -74,7 +70,9 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="2"></iframe>
                 </div>
-                <div class="col-3">
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -86,9 +84,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="3"></iframe>
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -100,7 +96,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="4"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -112,7 +108,9 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="5"></iframe>
                 </div>
-                <div class="col-3">
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -124,7 +122,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="6"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -136,9 +134,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="7"></iframe>
                 </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -150,7 +146,9 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="8"></iframe>
                 </div>
-                <div class="col-3">
+            </div>
+            <div class="row mb-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -162,7 +160,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="9"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -174,7 +172,7 @@
                     </div>
                     <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="10"></iframe>
                 </div>
-                <div class="col-3">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-body">
                             <div class="clearfix">
@@ -190,48 +188,60 @@
         </div>
 
         <!-- 歌曲搜尋與加入功能區塊 -->
-        <div class="row mb-3">
-            <div class="col text-left">
-                <div class="form-group">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">輸入歌曲名稱</span>
+        <div id="music-setting" class="row">
+            <div class="col-sm-6 mb-3">
+                <div class="card border-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">設定歌單</h5>
+                        <p class="card-text">這裡可以選擇歌單或是自訂想要個歌曲！</p>
+                        <hr class="mt-1 mb-3">
+                        <div class="form-group">
+                            <label for="slt-music-list">選擇遊戲歌單</label>
+                            <div class="input-group">
+                                <select id="slt-music-list" class="form-control"></select>
+                                <div class="input-group-append">
+                                    <button id="btn-add-list" type="button" class="btn btn-dark">加入</button>
+                                </div>
+                            </div>
                         </div>
-                        <input id="music-input" class="form-control" type="text">
-                        <div class="input-group-append">
-                            <button id="btn-search" type="button" class="btn btn-success">搜尋歌曲</button>
+                        <hr class="mt-4">
+                        <div class="form-group">
+                            <label for="slt-music-list">或自訂歌單</label>
+                            <div class="input-group">
+                                <input id="music-input" class="form-control" placeholder="請輸入歌名" type="text">
+                                <div class="input-group-append">
+                                    <button id="btn-search" type="button" class="btn btn-dark">搜尋</button>
+                                </div>
+                            </div>
                         </div>
+                        <table id="table-search" class="table">
+                            <thead>
+                                <tr>
+                                    <th>搜尋結果（點選結果加入單曲）</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col text-right">
-                <button id="btn-start" type="button" class="btn btn-block btn-light" disabled>加入六首歌曲後即可開始</button>
-            </div>
-        </div>
-
-        <!-- 列表區塊 -->
-        <div class="row mb-3 table-panel">
-            <div class="col">
-                <table id="table-search" class="table">
-                    <thead>
-                        <tr>
-                            <th>搜尋結果（點列表加入）</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col">
-                <table id="table-music" class="table">
-                    <thead>
-                        <tr>
-                            <th>已加入歌曲列表</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <div class="col-sm-6 mb-3">
+                <div class="card border-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">目前遊戲歌單</h5>
+                        <p class="card-text">以下是將進行遊戲的歌單。加入六首後即可開始！</p>
+                        <table id="table-music" class="table">
+                            <thead>
+                                <tr>
+                                    <th>已加入歌曲列表</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -257,6 +267,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="fixed-bottom pb-2">
+        <div class="container">
+            <button id="btn-start" type="button" class="btn btn-block btn-success" disabled>開始</button>
         </div>
     </div>
 </body>

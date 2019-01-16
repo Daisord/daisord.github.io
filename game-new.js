@@ -1,4 +1,7 @@
-$(() => {
+// TODO: 1. 翻牌與播放區分開來
+//       2. 遊戲的排版再調整一下
+
+$(async () => {
     let musicList = [];
     let sltCounter = 0; // 點擊次數計數器
     let remainderCounter = 6; // 尚未完成的配對計數器
@@ -6,6 +9,77 @@ $(() => {
     let lastNumTemp; // 前次點擊播放的號碼暫存
     let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;
     let timeout;
+
+    // 加入排行榜歌單至選單
+    await $.ajax({
+        url: 'https://api.kkbox.com/v1.1/charts',
+        method: 'GET',
+        data: {
+            territory: 'TW'
+        },
+        headers: {
+            Authorization: 'Bearer duA3r9l4jEhPP8QSxfeaSA=='
+        },
+        success: (data, textStatus, jqXHR ) => {
+            let slt = $('#slt-music-list');
+            
+            data.data.forEach((x) => {
+                slt.append('<option value="' + x.id + '">' + x.title + '</option>');
+            });
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+            alert('發生錯誤');
+        }
+    });
+
+    // 加入選擇的歌單至遊戲曲目
+    $('#btn-add-list').on('click', async function () {
+        let slt = $('#slt-music-list');
+
+        await $.ajax({
+            url: 'https://api.kkbox.com/v1.1/charts/' + slt.find(':selected').val(),
+            method: 'GET',
+            data: {
+                territory: 'TW'
+            },
+            headers: {
+                Authorization: 'Bearer duA3r9l4jEhPP8QSxfeaSA=='
+            },
+            success: (data, textStatus, jqXHR ) => {
+                for (let idx = 0; idx < 6; idx++) {
+                    const x = data.tracks.data[idx];
+
+                    // 檢查是否有重複的單曲 
+                    let check = false;
+                    musicList.forEach((t) => {
+                        if (t.includes(x.id)) {
+                            check = true;
+                        }
+                    });
+                    if (check) { continue; }
+                    
+                    if (musicList.length < 6) {
+                        $('#table-music tbody').append(
+                            '<tr data-mid="' + x.id + '"><td>' + 
+                            '歌手：' + x.album.artist.name + '<br/>' + 
+                            '專輯：' + x.album.name + '<br/>' + 
+                            '歌名：' + x.name + '</td></tr>'
+                        );
+                        musicList.push([String(x.id), 0]);
+                    }
+    
+                    // 選取六首後停止增加歌曲
+                    if (musicList.length >= 6) {
+                        setSettingControllersState();
+                        break;
+                    }                     
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert('發生錯誤');
+            }
+        });        
+    });
 
     // 搜尋加入音樂
     $('#btn-search').on('click', async function () {
@@ -41,9 +115,21 @@ $(() => {
 
                         // 加入音樂到配對列表
                         $('#table-search tbody tr').on('click', function() {
-                            if (musicList.length < 6) {
-                                let tr = $(this);
+                            let tr = $(this);
 
+                            // 檢查是否有重複的單曲
+                            let check = false;
+                            musicList.forEach((t) => {
+                                if (t.includes(String(tr.data('mid')))) {
+                                    check = true;
+                                }
+                            });
+                            if (check) {
+                                alert('此單曲已選過囉！');
+                                return;
+                            }             
+
+                            if (musicList.length < 6) {
                                 musicList.push([String(tr.data('mid')), 0]);
                                 console.dir(musicList);
     
@@ -52,8 +138,7 @@ $(() => {
 
                             // 選取六首後停止增加歌曲
                             if (musicList.length >= 6) {
-                                $('#btn-start').prop('disabled', false);
-                                $('#btn-search').prop('disabled', true);
+                                setSettingControllersState();
                             }                            
                         });                        
                     } else {
@@ -72,9 +157,17 @@ $(() => {
         setFrameSrc();
         $(this).html('遊戲已開始！');
         $(this).prop('disabled', true);
-        $('.table-panel').hide();
+        $('#music-setting').hide();
         $('.game-panel').show();
     });
+
+    function setSettingControllersState() {
+        $('#btn-start').prop('disabled', false);
+        $('#btn-search').prop('disabled', true);
+        $('#music-input').prop('disabled', true);
+        $('#btn-add-list').prop('disabled', true);
+        $('#slt-music-list').prop('disabled', true);        
+    }
 
     function setFrameSrc() {
         let player = $('.music-player');
