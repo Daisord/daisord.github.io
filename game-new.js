@@ -1,12 +1,11 @@
-// TODO: 1. 翻牌與播放區分開來
-//       2. 遊戲 Table 的切版再調整一下適應手機畫面
-
 $(async () => {
-    let musicList = [];
+    let musicList = []; // 遊戲歌單
     let sltCounter = 0; // 點擊次數計數器
     let remainderCounter = 6; // 尚未完成的配對計數器
     let sltMusicTemp = []; // 播放音樂的 btn 暫存
-    let lastNumTemp; // 前次點擊播放的號碼暫存
+    let lastNumTemp; // 前次配對的卡片號碼暫存
+    let lastPlayNum; // 前次點擊播放的號碼暫存
+    let isMusicPlaying = false; // 是否現在有音樂播放中
     let lastMusicSrcTemp // 前次點擊播放的音樂連結暫存;
     let timeout;
 
@@ -28,7 +27,7 @@ $(async () => {
             });
         },
         error: (jqXHR, textStatus, errorThrown) => {
-            alert('發生錯誤');
+            alert('載入歌單選單發生錯誤');
         }
     });
 
@@ -76,7 +75,7 @@ $(async () => {
                 }
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert('發生錯誤');
+                alert('加入歌單發生錯誤');
             }
         });        
     });
@@ -147,7 +146,7 @@ $(async () => {
                 }
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert('發生錯誤');
+                alert('搜尋音樂發生錯誤');
             }
         });    
     });
@@ -181,8 +180,6 @@ $(async () => {
 
             await setRandomMusic(frame);
         });
-
-        $('.btn-play').show();
     }
 
     function setRandomMusic(frame) {
@@ -213,60 +210,45 @@ $(async () => {
     async function setBtnRecovery() {
         await sltMusicTemp.forEach((x) => {
             if (x.data('state') !== 1) {
-                // x.removeClass('btn-primary');
-                // x.addClass('btn-dark');
+                x.removeClass('text-primary');
             } else {
-                x.html('&nbsp;完成');
+                x.html('&nbsp;成功');
                 x.prop('disabled', true);     
             }
         });
     }
 
+    // 播放音樂處理
     $('.btn-play').on('click', function () {
         let btn = $(this);
         let num = btn.data('num');
-        let state = btn.data('state');
         let frame = $('.music-player[data-num="' + num + '"]');
 
-        console.log('點擊第 ' + num + ' 首音樂');
+        console.log('播放第 ' + num + ' 首音樂');
 
         // 連點了同一首音樂則停止播放，不計數與暫存
-        if (num === lastNumTemp) {
+        if (num === lastPlayNum) {
             stop();
 
             // 取消目前的 teimout
             clearTimeout(timeout);
-
-            console.log('點了同一首音樂');
             console.log('停止播放');
             return;
         }
 
-        // 點了已配對完成的音樂則直接返回，不計數與暫存
-        if (state === 1) {
-            console.log('點了完成配對的音樂');
+        // 尚有音樂播放中，阻止其他音樂播放
+        if (isMusicPlaying) {
+            console.log('阻止播放');
             return;
         }
-
-        // >= 2 表示點到不同音樂但尚未播放停止，直接返回
-        if (sltCounter >= 2) {
-            return;
-        }
-
-        // 暫存目前點擊播放的音樂
-        sltMusicTemp.push(btn);
-
         // 點擊播放一首音樂
-        if (sltCounter < 2) {
+        else {
             // 連結到 KKBOX Widget 頁面
             frame.attr('src', frame.data('src'));
 
-            lastNumTemp = num;
-            sltCounter++;
-
+            lastPlayNum = num;
+            isMusicPlaying = true;
             btn.html('&nbsp;停止');
-            // btn.removeClass('btn-dark');
-            // btn.addClass('btn-primary');
 
             // 播放 15 秒後停止播放
             timeout = setTimeout(() => {
@@ -274,38 +256,71 @@ $(async () => {
             }, 15000);
         }
 
-        // 播放兩首歌曲後
+        function stop() {
+            // 連結到空白頁關閉 KKBOX Widget 頁面
+            frame.attr('src', 'about:blank');
+
+            // 復原可播放功能
+            btn.html('&nbsp;播放');
+            isMusicPlaying = false;
+            lastPlayNum = undefined;
+        }        
+    });
+
+    // 配對音樂處理
+    $('.btn-check').on('click', function () {
+        let btn = $(this);
+        let num = btn.data('num');
+        let state = btn.data('state');
+        let frame = $('.music-player[data-num="' + num + '"]');
+        
+        console.log('配對第 ' + num + ' 首音樂');
+
+        // 連點了同一個卡片則不執行配對功能且不計數與暫存
+        if (num === lastNumTemp) {
+            console.log('配對同一首音樂');
+            return;
+        }
+
+        // 點了已配對完成的卡片則直接返回，不計數與暫存
+        if (state === 1) {
+            console.log('點了完成配對的音樂');
+            return;
+        }
+
+        // 暫存目前配對的卡片
+        sltMusicTemp.push(btn);
+
+        // 配對音樂卡片
+        if (sltCounter < 2) {
+            lastNumTemp = num;
+            sltCounter++;
+
+            btn.addClass('text-primary');
+        }
+
+        // 配對兩張卡片後
         if (sltCounter >= 2) {
-            // 播放的歌曲配對成功
+            // 音樂卡片配對成功
             if (frame.data('src') === lastMusicSrcTemp) {
                 sltMusicTemp.forEach((x) => {
                     x.data('state', 1);
                 });
                 remainderCounter--;
 
-                console.log('歌曲配對成功');
+                console.log('音樂卡片配對成功');
             } else {
-                console.log('歌曲配對失敗');
-            }
-        }
-
-        lastMusicSrcTemp = frame.data('src');
-
-        function stop() {
-            // 連結到空白頁關閉 KKBOX Widget 頁面
-            frame.attr('src', 'about:blank');
-
-            // 若尚未屬於完成狀態則復原可播放狀態
-            if (btn.data('state') !== 1) {
-                btn.html('&nbsp;播放');
+                $('#btn-fail').click();
+                console.log('音樂卡片配對失敗');
             }
 
-            // 點擊播放兩首後
+            // 配對兩張音樂卡片後
             if (sltCounter >= 2) {
-                // 於第二首播放結束時自動刷新
                 setBtnRecovery();
                 refreshTemp();
-            }
-        }        
+            }            
+        }
+
+        lastMusicSrcTemp = frame.data('src');        
     });
 });

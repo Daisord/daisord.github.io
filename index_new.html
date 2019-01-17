@@ -41,7 +41,7 @@
             width: 33.33%
         }
 
-        .btn-play {
+        .btn-play, .btn-check {
             cursor: pointer;
         }
 
@@ -52,31 +52,36 @@
 
         @media (max-width: 575px) {
             .card-panel {
-                width: 20vw; height: 20vw; 
+                width: 20vw; height: 20vw;
+                font-size: 1em;
             }
         }
 
         @media (min-width: 576px) { 
             .card-panel {
-                width: 17.5vw; height: 17.5vw; 
+                width: 17.5vw; height: 17.5vw;
+                font-size: 1em; 
             }         
         }
 
         @media (min-width: 768px) {
             .card-panel {
-                width: 15vw; height: 15vw; 
+                width: 15vw; height: 15vw;
+                font-size: 1.17em;
             }           
          }
 
         @media (min-width: 992px) {
             .card-panel {
-                width: 12.5vw; height: 12.5vw; 
+                width: 12.5vw; height: 12.5vw;
+                font-size: 1.5em;
             }          
          }
 
         @media (min-width: 1200px) {
             .card-panel {
                 width: 10vw; height: 10vw; 
+                font-size: 2em
             }           
          }        
     </style>
@@ -98,12 +103,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="0">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="0">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="0">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -115,12 +120,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="1">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="1">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="1">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -132,12 +137,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="2">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="2">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="2">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -151,12 +156,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="3">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="3">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="3">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -168,12 +173,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="4">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="4">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="4">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -185,12 +190,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="5">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="5">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="5">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -204,12 +209,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="6">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="6">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="6">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -221,12 +226,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="7">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="7">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="7">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -238,12 +243,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="8">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="8">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="8">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -257,12 +262,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="9">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="9">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="9">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -274,12 +279,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="10">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="10">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="10">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -291,12 +296,12 @@
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="fas fa-music"></i>
+                                            <i class="btn-check fas fa-music" data-state="0" data-num="11">&nbsp;配對</i>
                                         </div>
                                     </div>
                                     <div class="m-0" style="height: 33.33%;">
                                         <div class="text-center">
-                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="11">&nbsp;播放</i>
+                                            <i class="btn-play fas fa-play-circle" data-num="11">&nbsp;播放</i>
                                         </div>
                                     </div>
                                 </div>
@@ -379,10 +384,9 @@
         </div>
 
         <!-- 遊戲結束提示 -->
-        <button id="btn-end" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalGameOver"
-            style="display: none;">Hidden Ones</button>
-        <div class="modal fade" id="modalGameOver" tabindex="-1" role="dialog" aria-labelledby="modalGameOverLabel"
-            aria-hidden="true">
+        <button id="btn-end" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalGameOver" style="display: none;">Hidden
+            Ones</button>
+        <div class="modal fade" id="modalGameOver" tabindex="-1" role="dialog" aria-labelledby="modalGameOverLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -392,11 +396,30 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <h1>恭喜！全部配對完成！</h1>
+                        <h1 class="text-center">恭喜！全部配對完成！</h1>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-dismiss="modal">關閉提示</button>
                         <button type="button" class="btn btn-primary" onclick="location.replace(location);">再玩一次</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配對失敗提示 -->
+        <button id="btn-fail" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFail" style="display: none;">Hidden
+            Ones</button>
+        <div class="modal fade" id="modalFail" tabindex="-1" role="dialog" aria-labelledby="modalFailLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalFailLabel">配對失敗</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h1 class="text-center">啊勒！配對錯誤囉！</h1>
                     </div>
                 </div>
             </div>
