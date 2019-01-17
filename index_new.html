@@ -9,7 +9,9 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous">
+    
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
@@ -26,164 +28,295 @@
         #table-search > tbody > tr {
             cursor: pointer;
         }
+
+        #game-table {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;            
+        }
+
+        #game-table td {
+            width: 33.33%
+        }
+
+        .btn-play {
+            cursor: pointer;
+        }
+
+        .card-panel {
+            margin-left: auto; 
+            margin-right: auto;
+        }
+
+        @media (max-width: 575px) {
+            .card-panel {
+                width: 20vw; height: 20vw; 
+            }
+        }
+
+        @media (min-width: 576px) { 
+            .card-panel {
+                width: 17.5vw; height: 17.5vw; 
+            }         
+        }
+
+        @media (min-width: 768px) {
+            .card-panel {
+                width: 15vw; height: 15vw; 
+            }           
+         }
+
+        @media (min-width: 992px) {
+            .card-panel {
+                width: 12.5vw; height: 12.5vw; 
+            }          
+         }
+
+        @media (min-width: 1200px) {
+            .card-panel {
+                width: 10vw; height: 10vw; 
+            }           
+         }        
     </style>
 </head>
 
 <body>
-    <div class="container mt-3 mb-5">
+    <div class="container mt-3 mb-5 h-100">
         <!-- 遊戲區塊 -->
         <div class="game-panel" style="display: none;">
-            <div class="row mb-3">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">0</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="0">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="0"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">1</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="1">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="1"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">2</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="2">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="2"></iframe>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">3</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="3">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="3"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">4</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="4">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="4"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">5</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="5">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="5"></iframe>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">6</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="6">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="6"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">7</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="7">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="7"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">8</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="8">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="8"></iframe>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">9</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="9">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="9"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">A</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="10">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="10"></iframe>
-                </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <h1 class="float-left">B</h1>
-                                <button type="button" class="btn-play btn btn-lg btn-dark float-right" data-state="0"
-                                    data-num="11">播放</button>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="11"></iframe>
-                </div>
+            <!-- 遊戲 Table -->
+            <div id="game-table" class="pl-5 pr-5 pt-2 pb-2">
+                <table class="w-100 h-100">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 0</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="0">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 1</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="1">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 2</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="2">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 3</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="3">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 4</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="4">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 5</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="5">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 6</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="6">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 7</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="7">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 8</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="8">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card 9</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="9">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card A</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="10">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="card-panel bg-dark text-light rounded">
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center card-number">Card B</div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="fas fa-music"></i>
+                                        </div>
+                                    </div>
+                                    <div class="m-0" style="height: 33.33%;">
+                                        <div class="text-center">
+                                            <i class="btn-play fas fa-play-circle" data-state="0" data-num="11">&nbsp;播放</i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="0"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="1"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="2"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="3"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="4"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="5"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="6"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="7"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="8"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="9"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="10"></iframe>
+                <iframe width="0" height="0" src="about:blank" class="music-player" allow="autoplay" data-num="11"></iframe>
             </div>
         </div>
 

@@ -1,5 +1,5 @@
 // TODO: 1. 翻牌與播放區分開來
-//       2. 遊戲的排版再調整一下
+//       2. 遊戲 Table 的切版再調整一下適應手機畫面
 
 $(async () => {
     let musicList = [];
@@ -159,6 +159,10 @@ $(async () => {
         $(this).prop('disabled', true);
         $('#music-setting').hide();
         $('.game-panel').show();
+
+        setTimeout(() => {
+            $(this).hide();
+        }, 1500);
     });
 
     function setSettingControllersState() {
@@ -209,10 +213,11 @@ $(async () => {
     async function setBtnRecovery() {
         await sltMusicTemp.forEach((x) => {
             if (x.data('state') !== 1) {
-                x.removeClass('btn-primary');
-                x.addClass('btn-dark');
+                // x.removeClass('btn-primary');
+                // x.addClass('btn-dark');
             } else {
-                x.html('完成');
+                x.html('&nbsp;完成');
+                x.prop('disabled', true);     
             }
         });
     }
@@ -259,9 +264,9 @@ $(async () => {
             lastNumTemp = num;
             sltCounter++;
 
-            btn.html('停止');
-            btn.removeClass('btn-dark');
-            btn.addClass('btn-primary');
+            btn.html('&nbsp;停止');
+            // btn.removeClass('btn-dark');
+            // btn.addClass('btn-primary');
 
             // 播放 15 秒後停止播放
             timeout = setTimeout(() => {
@@ -292,7 +297,7 @@ $(async () => {
 
             // 若尚未屬於完成狀態則復原可播放狀態
             if (btn.data('state') !== 1) {
-                btn.html('播放');
+                btn.html('&nbsp;播放');
             }
 
             // 點擊播放兩首後
