@@ -1,11 +1,1284 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>即將上線</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>土地 XML → Excel 轉換工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: #fff;
+            padding: 24px 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        header p {
+            font-size: .85rem;
+            opacity: .8;
+            margin-top: 4px;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 28px 24px;
+        }
+
+        /* ── 上傳區 ── */
+        .upload-card {
+            background: #fff;
+            border: 2px dashed #93c5fd;
+            border-radius: 12px;
+            padding: 36px 24px;
+            text-align: center;
+            transition: border-color .2s, background .2s;
+            cursor: pointer;
+        }
+
+        .upload-card:hover,
+        .upload-card.drag-over {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .upload-card svg {
+            width: 52px;
+            height: 52px;
+            color: #60a5fa;
+            margin-bottom: 12px;
+        }
+
+        .upload-card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .upload-card p {
+            font-size: .85rem;
+            color: #64748b;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            margin-top: 14px;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-primary:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* ── 狀態列 ── */
+        #statusBar {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            font-size: .9rem;
+        }
+
+        #statusBar.error {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #bfdbfe;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── 統計卡 ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+            border-left: 4px solid #2563eb;
+        }
+
+        .stat-card .label {
+            font-size: .75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .stat-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-top: 4px;
+        }
+
+        /* ── 工具列 ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .toolbar label {
+            font-size: .85rem;
+            color: #475569;
+        }
+
+        .toolbar input[type="text"] {
+            padding: 7px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: .85rem;
+            width: 220px;
+        }
+
+        .toolbar input[type="text"]:focus {
+            outline: 2px solid #2563eb;
+            border-color: transparent;
+        }
+
+        .btn-success {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 20px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            margin-left: auto;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .btn-success:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* ── 資料表 ── */
+        .table-wrap {
+            margin-top: 16px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .82rem;
+        }
+
+        thead tr {
+            background: #1e3a5f;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        thead th {
+            padding: 10px 14px;
+            text-align: left;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tbody tr:hover {
+            background: #eff6ff;
+        }
+
+        tbody td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        td.json-cell {
+            max-width: 360px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #475569;
+            font-size: .78rem;
+            cursor: pointer;
+        }
+
+        td.json-cell:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        /* ── JSON 彈窗 ── */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 620px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .2);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.4rem;
+            color: #64748b;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+        }
+
+        pre {
+            background: #0f172a;
+            color: #a5f3fc;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: .82rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* ── 分頁 ── */
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            min-width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: .82rem;
+            transition: background .15s;
+        }
+
+        .page-btn:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .page-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+            font-weight: 700;
+        }
+
+        .page-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: .8rem;
+            color: #64748b;
+            margin-left: auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ── KML 上傳 ── */
+        .upload-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .upload-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-card--kml {
+            border-color: #6ee7b7;
+        }
+
+        .upload-card--kml:hover,
+        .upload-card--kml.drag-over {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+
+        .upload-card--kml svg {
+            color: #34d399;
+        }
+
+        .btn-kml {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #059669;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            margin-top: 14px;
+        }
+
+        .btn-kml:hover {
+            background: #047857;
+        }
+
+        /* ── Polygon 儲存格 ── */
+        td.polygon-cell {
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #475569;
+            font-size: .78rem;
+            cursor: pointer;
+        }
+
+        td.polygon-cell:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        /* ── 地圖圖示按鈕 ── */
+        .btn-map {
+            background: none;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 3px 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1.4;
+            transition: background .15s, border-color .15s;
+        }
+
+        .btn-map:hover {
+            background: #ecfdf5;
+            border-color: #059669;
+        }
+
+        /* ── 地圖 Modal ── */
+        .modal--map {
+            max-width: 980px;
+            width: 96%;
+            max-height: 92vh;
+        }
+
+        .map-info-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 18px;
+            padding: 8px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: .82rem;
+            color: #475569;
+        }
+
+        .map-info-bar .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .map-info-bar .chip-label {
+            color: #94a3b8;
+            font-size: .75rem;
+        }
+
+        #mapContainer {
+            height: 540px;
+            width: 100%;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* 確保 Leaflet 控件在 Modal z-index 之上 */
+        .modal--map .leaflet-top,
+        .modal--map .leaflet-bottom {
+            z-index: 1000;
+        }
+
+        .layer-btn {
+            padding: 4px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #fff;
+            font-size: .78rem;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .layer-btn:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        .layer-btn.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+            font-weight: 600;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>即將上線</h1>
+
+    <header>
+        <h1>🏡 土地 XML → Excel 轉換工具</h1>
+        <p>支援 &lt;Lands&gt; XML（國有 / 直轄市有 / 縣市有 / 鄉鎮市有）+ KML 地籍圖形，自動關聯 Polygon 並匯出 Excel</p>
+    </header>
+
+    <main>
+        <!-- 上傳區 -->
+        <div class="upload-row">
+            <!-- XML 上傳 -->
+            <div class="upload-card" id="dropZone">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 16v-8m0 0-3 3m3-3 3 3M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
+                </svg>
+                <h2>① 拖曳 XML 檔至此，或點擊選擇</h2>
+                <p>支援多個 .xml 同時選取（土地屬性資料）</p>
+                <button class="btn-primary" id="pickBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15.172 7l-6.586 6.586a2 2 0 002.828 2.828L18 9.828M7 17H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2" />
+                    </svg>
+                    選擇 XML 檔案
+                </button>
+                <input type="file" id="fileInput" accept=".xml" multiple />
+            </div>
+            <!-- KML 上傳 -->
+            <div class="upload-card upload-card--kml" id="kmlDropZone">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 13l4.553 2.276A1 1 0 0021 21.382V10.618a1 1 0 00-.553-.894L15 7m0 13V7m0 0L9 4" />
+                </svg>
+                <h2>② 拖曳 KML 檔至此，或點擊選擇</h2>
+                <p>支援多個 .kml 同時選取（地籍 Polygon 圖形）</p>
+                <button class="btn-kml" id="kmlPickBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    選擇 KML 檔案
+                </button>
+                <input type="file" id="kmlFileInput" accept=".kml" multiple />
+            </div>
+        </div>
+
+        <!-- 狀態列 -->
+        <div id="statusBar">
+            <div class="spinner" id="spinner"></div>
+            <span id="statusMsg">處理中…</span>
+        </div>
+
+        <!-- 統計 -->
+        <div class="stats-grid hidden" id="statsGrid">
+            <div class="stat-card">
+                <div class="label">總土地筆數</div>
+                <div class="value" id="statTotal">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#7c3aed">
+                <div class="label">篩選後筆數</div>
+                <div class="value" id="statFiltered">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#0891b2">
+                <div class="label">縣市種類</div>
+                <div class="value" id="statCity">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#16a34a">
+                <div class="label">已載入 XML 檔</div>
+                <div class="value" id="statFiles">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#059669">
+                <div class="label">已載入 KML 檔</div>
+                <div class="value" id="statKmlFiles">0</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#d97706">
+                <div class="label">KML 已關聯筆數</div>
+                <div class="value" id="statKmlMatch">0</div>
+            </div>
+        </div>
+
+        <!-- 工具列 -->
+        <div class="toolbar hidden" id="toolbar">
+            <label>
+                🔍 快速搜尋
+                <input type="text" id="searchInput" placeholder="地號、縣市、地類別…" />
+            </label>
+            <button class="btn-success" id="exportBtn" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v8m0 0-3-3m3 3 3-3M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
+                </svg>
+                匯出 Excel
+            </button>
+        </div>
+
+        <!-- 表格 -->
+        <div class="table-wrap hidden" id="tableWrap">
+            <div class="table-scroll">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>縣市</th>
+                            <th>鄉鎮市區</th>
+                            <th>段代碼</th>
+                            <th>段小段</th>
+                            <th>地號</th>
+                            <th>登記面積</th>
+                            <th>所有權人（JSON）</th>
+                            <th>地圖</th>
+                            <th>Polygon_JSON</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </main>
+
+    <!-- JSON 彈窗 -->
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <span id="modalTitle">詳細資料</span>
+                <button class="modal-close" id="modalClose">✕</button>
+            </div>
+            <div class="modal-body">
+                <pre id="modalContent"></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- 地圖彈窗 -->
+    <div class="modal-backdrop" id="mapModalBackdrop">
+        <div class="modal modal--map">
+            <div class="modal-header">
+                <span id="mapModalTitle">地籍地圖</span>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <button class="layer-btn active" id="layerOsm" onclick="switchLayer('osm')">OSM 街圖</button>
+                    <button class="layer-btn" id="layerOrtho" onclick="switchLayer('ortho')">NLSC 正射影像</button>
+                    <button class="modal-close" id="mapModalClose">✕</button>
+                </div>
+            </div>
+            <div class="map-info-bar" id="mapInfoBar"></div>
+            <div id="mapContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ── 常數 ──────────────────────────────────────────────────
+        const PAGE_SIZE = 100;
+        const TAG_GROUPS = ['國有', '直轄市有', '縣市有', '鄉鎮市有'];
+        const OWNER_KEYS = ['登記次序', '所有權人名稱', '管理者名稱', '所有權人類別', '權利範圍類別'];
+        const LAND_KEYS = ['縣市', '鄉鎮市區', '段代碼', '段小段', '地號', '登記面積'];
+
+        // ── 狀態 ──────────────────────────────────────────────────
+        let allRows = [];    // 全部資料
+        let filtered = [];    // 篩選後資料
+        let currentPage = 1;
+        let loadedFileCount = 0;
+        let kmlMap = new Map(); // key: "SECTNO|PARCELNO" → value: Polygon GeoJSON 字串
+        let kmlLoadedCount = 0;
+
+        // ── DOM refs ──────────────────────────────────────────────
+        const fileInput = document.getElementById('fileInput');
+        const pickBtn = document.getElementById('pickBtn');
+        const dropZone = document.getElementById('dropZone');
+        const statusBar = document.getElementById('statusBar');
+        const spinner = document.getElementById('spinner');
+        const statusMsg = document.getElementById('statusMsg');
+        const statsGrid = document.getElementById('statsGrid');
+        const toolbar = document.getElementById('toolbar');
+        const tableWrap = document.getElementById('tableWrap');
+        const tableBody = document.getElementById('tableBody');
+        const pagination = document.getElementById('pagination');
+        const searchInput = document.getElementById('searchInput');
+        const exportBtn = document.getElementById('exportBtn');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modalContent = document.getElementById('modalContent');
+        const modalClose = document.getElementById('modalClose');
+        const kmlDropZone = document.getElementById('kmlDropZone');
+        const kmlFileInput = document.getElementById('kmlFileInput');
+
+        // ── 事件綁定 ──────────────────────────────────────────────
+        pickBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', e => {
+            const files = [...e.target.files].filter(f => f.name.endsWith('.xml'));
+            if (files.length) processFiles(files);
+        });
+
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = [...e.dataTransfer.files].filter(f => f.name.endsWith('.xml'));
+            if (files.length) processFiles(files);
+            else showStatus('請拖入 .xml 格式的檔案', true);
+        });
+
+        searchInput.addEventListener('input', () => {
+            currentPage = 1;
+            applyFilter();
+        });
+
+        exportBtn.addEventListener('click', exportExcel);
+        modalClose.addEventListener('click', () => modalBackdrop.classList.remove('open'));
+        modalBackdrop.addEventListener('click', e => {
+            if (e.target === modalBackdrop) modalBackdrop.classList.remove('open');
+        });
+
+        // KML 事件
+        document.getElementById('kmlPickBtn').addEventListener('click', () => kmlFileInput.click());
+        kmlFileInput.addEventListener('change', e => {
+            const files = [...e.target.files].filter(f => f.name.endsWith('.kml'));
+            if (files.length) processKmlFiles(files);
+            kmlFileInput.value = '';
+        });
+        kmlDropZone.addEventListener('dragover', e => { e.preventDefault(); kmlDropZone.classList.add('drag-over'); });
+        kmlDropZone.addEventListener('dragleave', () => kmlDropZone.classList.remove('drag-over'));
+        kmlDropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            kmlDropZone.classList.remove('drag-over');
+            const files = [...e.dataTransfer.files].filter(f => f.name.endsWith('.kml'));
+            if (files.length) processKmlFiles(files);
+            else showStatus('請拖入 .kml 格式的檔案', true);
+        });
+
+        // ── 核心解析 ──────────────────────────────────────────────
+        function processFiles(files) {
+            showStatus(`正在讀取 ${files.length} 個檔案…`);
+            statsGrid.classList.add('hidden');
+            toolbar.classList.add('hidden');
+            tableWrap.classList.add('hidden');
+            exportBtn.disabled = true;
+            allRows = [];
+
+            function readOne(file) {
+                return new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        try {
+                            resolve({ ok: true, name: file.name, rows: parseXML(e.target.result) });
+                        } catch (err) {
+                            resolve({ ok: false, name: file.name, error: err.message });
+                        }
+                    };
+                    reader.onerror = () => resolve({ ok: false, name: file.name, error: '讀取失敗' });
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            Promise.all(files.map(readOne)).then(results => {
+                const errors = [];
+                results.forEach(r => {
+                    if (r.ok) allRows.push(...r.rows);
+                    else errors.push(`${r.name}: ${r.error}`);
+                });
+                if (errors.length) {
+                    showStatus(`⚠️ 部分檔案解析失敗：${errors.join('；')}`, true);
+                }
+                if (allRows.length) {
+                    loadedFileCount = files.length - errors.length;
+                    joinPolygons();
+                    filtered = [...allRows];
+                    updateStats();
+                    statsGrid.classList.remove('hidden');
+                    toolbar.classList.remove('hidden');
+                    tableWrap.classList.remove('hidden');
+                    exportBtn.disabled = false;
+                    currentPage = 1;
+                    applyFilter();
+                    if (!errors.length) showStatus(`✅ 解析完成，共 ${loadedFileCount} 個檔案、${allRows.length} 筆土地資料`, false, true);
+                } else if (!errors.length) {
+                    showStatus('⚠️ 未解析到任何土地資料', true);
+                }
+            });
+        }
+
+        function parseXML(xmlText) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xmlText, 'application/xml');
+
+            const parseError = doc.querySelector('parsererror');
+            if (parseError) throw new Error(parseError.textContent.split('\n')[0]);
+
+            const root = doc.documentElement; // <Lands>
+            const rows = [];
+
+            // 彙整所有子節點的 <土地標示部>
+            for (const groupNode of root.children) {
+                const lands = groupNode.getElementsByTagName('土地標示部');
+                for (const land of lands) {
+                    const row = {};
+
+                    // 一般欄位
+                    for (const key of LAND_KEYS) {
+                        const el = land.getElementsByTagName(key)[0];
+                        row[key] = el ? el.textContent.trim() : '';
+                    }
+
+                    // 所有權人 → JSON
+                    const ownerEls = land.getElementsByTagName('所有權人');
+                    const owners = [];
+                    for (const ownerEl of ownerEls) {
+                        const o = {};
+                        for (const k of OWNER_KEYS) {
+                            const el = ownerEl.getElementsByTagName(k)[0];
+                            o[k] = el ? el.textContent.trim() : '';
+                        }
+                        owners.push(o);
+                    }
+                    row['所有權人'] = JSON.stringify(owners, null, 0);
+                    rows.push(row);
+                }
+            }
+            return rows;
+        }
+
+        // ── KML 處理 ────────────────────────────────────────────
+        function processKmlFiles(files) {
+            showStatus(`正在讀取 ${files.length} 個 KML 檔案…`);
+
+            function readOne(file) {
+                return new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        try {
+                            resolve({ ok: true, name: file.name, entries: parseKML(e.target.result) });
+                        } catch (err) {
+                            resolve({ ok: false, name: file.name, error: err.message });
+                        }
+                    };
+                    reader.onerror = () => resolve({ ok: false, name: file.name, error: '讀取失敗' });
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            Promise.all(files.map(readOne)).then(results => {
+                const errors = [];
+                let added = 0;
+                results.forEach(r => {
+                    if (r.ok) {
+                        r.entries.forEach(entry => { kmlMap.set(entry.key, entry.polygon); added++; });
+                    } else {
+                        errors.push(`${r.name}: ${r.error}`);
+                    }
+                });
+                kmlLoadedCount += files.length - errors.length;
+
+                if (errors.length) {
+                    showStatus(`⚠️ 部分 KML 解析失敗：${errors.join('；')}`, true);
+                } else {
+                    showStatus(`✅ KML 載入完成：${kmlLoadedCount} 個檔案、${added} 筆圖形`, false, true);
+                }
+
+                // 若 XML 已載入，重新對比并更新畫面
+                if (allRows.length) {
+                    joinPolygons();
+                    applyFilter();
+                    updateStats();
+                }
+            });
+        }
+
+        /**
+         * 解析單一 KML 檔
+         * @returns {{ key: string, polygon: string }[]}  key = "SECTNO|PARCELNO"
+         */
+        function parseKML(kmlText) {
+            const NS = 'http://www.opengis.net/kml/2.2';
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(kmlText, 'application/xml');
+            const parseError = doc.querySelector('parsererror');
+            if (parseError) throw new Error(parseError.textContent.split('\n')[0]);
+
+            const entries = [];
+            // 同時支援有命名空間和無命名空間的 KML
+            const placemarks = [
+                ...doc.getElementsByTagNameNS(NS, 'Placemark'),
+                ...doc.getElementsByTagName('Placemark')
+            ];
+            const seen = new Set();
+
+            for (const pm of placemarks) {
+                if (seen.has(pm)) continue;
+                seen.add(pm);
+
+                // 取得 SECTNO / PARCELNO
+                const allSimpleData = [
+                    ...pm.getElementsByTagNameNS(NS, 'SimpleData'),
+                    ...pm.getElementsByTagName('SimpleData')
+                ];
+                let sectno = '', parcelno = '';
+                for (const sd of allSimpleData) {
+                    const name = sd.getAttribute('name');
+                    if (name === 'SECTNO') sectno = sd.textContent.trim();
+                    else if (name === 'PARCELNO') parcelno = sd.textContent.trim();
+                }
+                if (!sectno || !parcelno) continue;
+
+                // 取得坐標串
+                const coordEls = [
+                    ...pm.getElementsByTagNameNS(NS, 'coordinates'),
+                    ...pm.getElementsByTagName('coordinates')
+                ];
+                if (!coordEls.length) continue;
+
+                // 支援 MultiGeometry：將所有環圆對应一個 MultiPolygon
+                const rings = coordEls.map(el =>
+                    el.textContent.trim().split(/\s+/)
+                        .map(pt => { const [lon, lat] = pt.split(',').map(Number); return [lon, lat]; })
+                        .filter(([lon, lat]) => !isNaN(lon) && !isNaN(lat))
+                ).filter(r => r.length > 0);
+
+                if (!rings.length) continue;
+
+                const geoJson = rings.length === 1
+                    ? { type: 'Polygon', coordinates: rings }
+                    : { type: 'MultiPolygon', coordinates: rings.map(r => [r]) };
+
+                entries.push({ key: `${sectno}|${parcelno}`, polygon: JSON.stringify(geoJson) });
+            }
+            return entries;
+        }
+
+        /**
+         * 岇 XML 地號（8 碼字元）轉換為 KML PARCELNO 格式
+         * 例： "01890000" → "189"， "10610002" → "1061-2"
+         */
+        function diHaoToParcelno(diHao) {
+            if (!diHao || diHao.length < 8) return diHao;
+            const main = parseInt(diHao.substring(0, 4), 10).toString();
+            const sub = parseInt(diHao.substring(4, 8), 10);
+            return sub === 0 ? main : `${main}-${sub}`;
+        }
+
+        /** 將 kmlMap 進行對比，寫入每筆 XML 資料的 Polygon_JSON 欄 */
+        function joinPolygons() {
+            allRows.forEach(r => {
+                const sectno = r['段代碼'] || '';
+                const parcelno = diHaoToParcelno(r['地號'] || '');
+                r['Polygon_JSON'] = kmlMap.get(`${sectno}|${parcelno}`) || '';
+            });
+        }
+
+        // ── 篩選 & 渲染 ───────────────────────────────────────────
+        function applyFilter() {
+            const q = searchInput.value.trim().toLowerCase();
+            if (q) {
+                filtered = allRows.filter(r =>
+                    LAND_KEYS.some(k => r[k].toLowerCase().includes(q)) ||
+                    r['所有權人'].toLowerCase().includes(q) ||
+                    (r['Polygon_JSON'] || '').toLowerCase().includes(q)
+                );
+            } else {
+                filtered = [...allRows];
+            }
+            document.getElementById('statFiltered').textContent = filtered.length.toLocaleString();
+            renderTable();
+        }
+
+        function renderTable() {
+            const total = filtered.length;
+            const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * PAGE_SIZE;
+            const pageRows = filtered.slice(start, start + PAGE_SIZE);
+
+            tableBody.innerHTML = pageRows.map((r, i) => {
+                const no = start + i + 1;
+                const absIdx = start + i;
+                const poly = r['Polygon_JSON'] || '';
+                return `<tr>
+      <td style="color:#94a3b8;text-align:right">${no}</td>
+      ${LAND_KEYS.map(k => `<td>${escHtml(r[k])}</td>`).join('')}
+      <td class="json-cell" title="點擊查看所有權人 JSON"
+          onclick="showJson(${JSON.stringify(r['所有權人']).replace(/"/g, '&quot;')}, '所有權人詳細資料')">
+        ${escHtml(r['所有權人'])}
+      </td>
+      <td style="text-align:center;white-space:nowrap">
+        ${poly
+                        ? `<button class="btn-map" onclick="openMapModal(${absIdx})" title="開啟地圖">🗺️</button>`
+                        : '<span style="color:#cbd5e1">—</span>'}
+      </td>
+      <td class="${poly ? 'polygon-cell' : ''}" title="${poly ? '點擊查看 Polygon JSON' : '無對應 KML'}"
+          ${poly ? `onclick="showJson(${JSON.stringify(poly).replace(/"/g, '&quot;')}, 'Polygon 坐標資料')"` : ''}>
+        ${poly
+                        ? escHtml(poly.length > 80 ? poly.substring(0, 80) + '…' : poly)
+                        : '<span style="color:#cbd5e1">—</span>'}
+      </td>
+    </tr>`;
+            }).join('');
+
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const createBtn = (label, page, disabled, active) => {
+                return `<button class="page-btn${active ? ' active' : ''}" ${disabled ? 'disabled' : ''}
+      onclick="goPage(${page})">${label}</button>`;
+            };
+
+            let html = '';
+            html += createBtn('«', 1, currentPage === 1, false);
+            html += createBtn('‹', currentPage - 1, currentPage === 1, false);
+
+            const range = pageRange(currentPage, totalPages);
+            let prev = null;
+            for (const p of range) {
+                if (prev !== null && p - prev > 1) html += '<span style="padding:0 4px;color:#94a3b8">…</span>';
+                html += createBtn(p, p, false, p === currentPage);
+                prev = p;
+            }
+
+            html += createBtn('›', currentPage + 1, currentPage === totalPages, false);
+            html += createBtn('»', totalPages, currentPage === totalPages, false);
+            html += `<span class="page-info">第 ${currentPage} / ${totalPages} 頁，共 ${filtered.length.toLocaleString()} 筆</span>`;
+            pagination.innerHTML = html;
+        }
+
+        function pageRange(cur, total) {
+            const delta = 2;
+            const pages = new Set([1, total]);
+            for (let i = Math.max(1, cur - delta); i <= Math.min(total, cur + delta); i++) pages.add(i);
+            return [...pages].sort((a, b) => a - b);
+        }
+
+        function goPage(p) {
+            currentPage = p;
+            renderTable();
+            document.getElementById('dataTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // ── 統計 ──────────────────────────────────────────────────
+        function updateStats() {
+            const matchCount = allRows.filter(r => r['Polygon_JSON']).length;
+            document.getElementById('statTotal').textContent = allRows.length.toLocaleString();
+            document.getElementById('statFiltered').textContent = filtered.length.toLocaleString();
+            document.getElementById('statCity').textContent = new Set(allRows.map(r => r['縣市'])).size;
+            document.getElementById('statFiles').textContent = loadedFileCount;
+            document.getElementById('statKmlFiles').textContent = kmlLoadedCount;
+            document.getElementById('statKmlMatch').textContent = matchCount.toLocaleString();
+        }
+
+        // ── 匯出 Excel ────────────────────────────────────────────
+        function exportExcel() {
+            if (!filtered.length) return;
+
+            const headers = ['縣市', '鄉鎮市區', '段代碼', '段小段', '地號', '登記面積', '所有權人', 'Polygon_JSON'];
+            const data = [headers, ...filtered.map(r => headers.map(h => r[h] || ''))];
+
+            const ws = XLSX.utils.aoa_to_sheet(data);
+
+            // 欄寬設定
+            ws['!cols'] = [
+                { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 12 },
+                { wch: 10 }, { wch: 80 }, { wch: 120 }
+            ];
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '土地資料');
+
+            // 以目前篩選狀態命名
+            const q = searchInput.value.trim();
+            const fname = q
+                ? `土地資料_篩選_${q}_${today()}.xlsx`
+                : `土地資料_${today()}.xlsx`;
+
+            XLSX.writeFile(wb, fname);
+        }
+
+        function today() {
+            const d = new Date();
+            return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        // ── 彈窗 ──────────────────────────────────────────────────
+        function showJson(jsonStr, title = 'JSON 資料') {
+            document.getElementById('modalTitle').textContent = title;
+            try {
+                modalContent.textContent = JSON.stringify(JSON.parse(jsonStr), null, 2);
+            } catch {
+                modalContent.textContent = jsonStr;
+            }
+            modalBackdrop.classList.add('open');
+        }
+
+        // ── 狀態列 ────────────────────────────────────────────────
+        function showStatus(msg, isError = false, autoHide = false) {
+            statusBar.style.display = 'flex';
+            statusBar.classList.toggle('error', isError);
+            statusMsg.textContent = msg;
+            spinner.style.display = isError || autoHide ? 'none' : 'block';
+            if (autoHide) setTimeout(() => { statusBar.style.display = 'none'; }, 4000);
+        }
+
+        // ── 工具 ──────────────────────────────────────────────────
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ── 地圖（Leaflet） ────────────────────────────────────────
+        const TILE_OSM = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+        const TILE_NLSC = 'https://wmts.nlsc.gov.tw/wmts/PHOTO2/default/GoogleMapsCompatible/{z}/{y}/{x}';
+        const ATTR_OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+        const ATTR_NLSC = '&copy; <a href="https://www.nlsc.gov.tw/" target="_blank">國土測繪中心</a>';
+
+        let leafletMap = null;
+        let leafletBaseLayer = null;
+        let leafletPolyLayer = null;
+        let currentTileType = 'osm';
+
+        /** 點擊 🗺️ 按鈕：依 filtered 索引開啟地圖 */
+        function openMapModal(absIdx) {
+            const row = filtered[absIdx];
+            if (!row || !row['Polygon_JSON']) return;
+
+            const backdrop = document.getElementById('mapModalBackdrop');
+
+            // 標題
+            document.getElementById('mapModalTitle').textContent =
+                `地籍地圖 — ${row['段小段'] || row['段代碼']} ${row['地號']}`;
+
+            // 資訊列
+            document.getElementById('mapInfoBar').innerHTML = [
+                ['縣市', row['縣市']],
+                ['鄉鎮市區', row['鄉鎮市區']],
+                ['段小段', row['段小段']],
+                ['地號', row['地號']],
+                ['登記面積', row['登記面積'] ? row['登記面積'] + ' ㎡' : '—'],
+            ].map(([label, val]) =>
+                `<span class="chip"><span class="chip-label">${label}</span>${escHtml(val || '—')}</span>`
+            ).join('');
+
+            backdrop.classList.add('open');
+
+            // 初始化地圖（僅第一次）
+            if (!leafletMap) {
+                leafletMap = L.map('mapContainer', { zoomControl: true });
+                leafletBaseLayer = L.tileLayer(TILE_OSM, {
+                    attribution: ATTR_OSM, maxZoom: 19
+                }).addTo(leafletMap);
+                currentTileType = 'osm';
+                // 同步 layer 按鈕狀態
+                document.getElementById('layerOsm').classList.add('active');
+                document.getElementById('layerOrtho').classList.remove('active');
+            }
+
+            // 移除舊的 Polygon 圖層
+            if (leafletPolyLayer) {
+                leafletMap.removeLayer(leafletPolyLayer);
+                leafletPolyLayer = null;
+            }
+
+            // 繪製新 Polygon
+            try {
+                const geoJson = JSON.parse(row['Polygon_JSON']);
+                leafletPolyLayer = L.geoJSON(geoJson, {
+                    style: {
+                        color: '#2563eb',
+                        weight: 2.5,
+                        fillColor: '#93c5fd',
+                        fillOpacity: 0.35,
+                    }
+                }).addTo(leafletMap);
+
+                // 自動縮放至圖形邊界
+                leafletMap.fitBounds(leafletPolyLayer.getBounds(), { padding: [60, 60] });
+            } catch (e) {
+                console.error('GeoJSON 解析失敗:', e);
+            }
+
+            // Leaflet 在 display:none 的容器初始化後須呼叫 invalidateSize
+            setTimeout(() => leafletMap.invalidateSize(), 120);
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapModalBackdrop').classList.remove('open');
+        }
+
+        /** 切換底圖：'osm' | 'ortho' */
+        function switchLayer(type) {
+            if (!leafletMap || type === currentTileType) return;
+            currentTileType = type;
+
+            // 移除舊底圖
+            if (leafletBaseLayer) leafletMap.removeLayer(leafletBaseLayer);
+
+            if (type === 'ortho') {
+                leafletBaseLayer = L.tileLayer(TILE_NLSC, {
+                    attribution: ATTR_NLSC, maxZoom: 20, tileSize: 256
+                }).addTo(leafletMap);
+                document.getElementById('layerOsm').classList.remove('active');
+                document.getElementById('layerOrtho').classList.add('active');
+            } else {
+                leafletBaseLayer = L.tileLayer(TILE_OSM, {
+                    attribution: ATTR_OSM, maxZoom: 19
+                }).addTo(leafletMap);
+                document.getElementById('layerOsm').classList.add('active');
+                document.getElementById('layerOrtho').classList.remove('active');
+            }
+
+            // 將底圖置於 Polygon 之下
+            if (leafletPolyLayer) leafletPolyLayer.bringToFront();
+        }
+
+        // 地圖彈窗 關閉事件
+        document.getElementById('mapModalClose').addEventListener('click', closeMapModal);
+        document.getElementById('mapModalBackdrop').addEventListener('click', e => {
+            if (e.target === document.getElementById('mapModalBackdrop')) closeMapModal();
+        });
+    </script>
 </body>
+
 </html>
